@@ -32,7 +32,7 @@ public class Main {
 
         byte [] finalFile = outputStream.toByteArray( );
 
-        Path convertedPath = Paths.get("C:\\Users\\simon\\Pictures\\grey.bmp");
+        Path convertedPath = Paths.get("Images\\converted\\grey.bmp");
         Files.write(convertedPath, finalFile);
 
 
