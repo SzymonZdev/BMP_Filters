@@ -1,4 +1,6 @@
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -16,8 +18,8 @@ public class Picture {
     public static void main(String[] args) {
         try {
             Picture testPic = new Picture();
-            String hexHeight = bytesToHex(testPic.header.sizeOfFile);
-            System.out.println(hexHeight);
+
+
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -27,7 +29,7 @@ public class Picture {
 
     public Picture() throws IOException {
         // gets the path of the file for the Files class to operate on
-        Path path = Paths.get("C:\\Users\\Anna\\IdeaProjects\\PNG_Filters\\Images\\courtyard.bmp");
+        Path path = Paths.get("C:\\Users\\simon\\Desktop\\Automation\\Java Masterclass\\PNG_Filters\\Images\\stadium.bmp");
         this.path = path;
 
         // reads the file at path and saves all bytes to an array of bytes
@@ -63,21 +65,39 @@ public class Picture {
         public byte[] numberColors;
         public byte[] importantColors;
 
+        public int widthValue;
+        public int heightValue;
+
         public Header() {
             idField = Arrays.copyOfRange(header, 0, 2);
-            sizeOfFile = Arrays.copyOfRange(header, 3, 6);
-            unused = Arrays.copyOfRange(header, 7, 10);
-            offSetForPixels = Arrays.copyOfRange(header, 11, 14);
-            DIBHeader = Arrays.copyOfRange(header, 15, 18);
-            width = Arrays.copyOfRange(header, 19, 22);
-            height = Arrays.copyOfRange(header, 23, 26);
-            colorPlanes = Arrays.copyOfRange(header, 27, 28);
-            bitsPerPixel = Arrays.copyOfRange(header, 29, 30);
-            arrayCompression = Arrays.copyOfRange(header, 31, 34);
-            rawSize = Arrays.copyOfRange(header, 35, 38);
-            printResolution = Arrays.copyOfRange(header, 39, 46);
-            numberColors = Arrays.copyOfRange(header, 47, 50);
-            importantColors = Arrays.copyOfRange(header, 51, 54);
+            sizeOfFile = Arrays.copyOfRange(header, 2, 6);
+            unused = Arrays.copyOfRange(header, 6, 10);
+            offSetForPixels = Arrays.copyOfRange(header, 10, 14);
+            DIBHeader = Arrays.copyOfRange(header, 14, 18);
+            width = Arrays.copyOfRange(header, 18, 22);
+            height = Arrays.copyOfRange(header, 22, 26);
+            colorPlanes = Arrays.copyOfRange(header, 26, 28);
+            bitsPerPixel = Arrays.copyOfRange(header, 28, 30);
+            arrayCompression = Arrays.copyOfRange(header, 30, 34);
+            rawSize = Arrays.copyOfRange(header, 34, 38);
+            printResolution = Arrays.copyOfRange(header, 38, 46);
+            numberColors = Arrays.copyOfRange(header, 46, 50);
+            importantColors = Arrays.copyOfRange(header, 50, 54);
+
+            widthValue = getIntValue(this.width);
+            heightValue = getIntValue(this.height);
+        }
+
+        private int getIntValue(byte[] bytes) {
+            int result = 0;
+            for (int i = 0; i < bytes.length; i++) {
+                if (i == 0) {
+                    result |= bytes[i] << (0);
+                } else {
+                    result |= bytes[i] << (8 * i);
+                }
+            }
+            return Math.abs(result);
         }
     }
 
