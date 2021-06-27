@@ -12,24 +12,27 @@ public class Picture {
     public byte[] fileHeaderBytes;
     public byte[] cleanFileBytes;
     public Header header;
-    public Pixel pixel;
+    public int[][][] allPixels;
     private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
 
     public static void main(String[] args) {
         try {
             Picture testPic = new Picture();
-
-
+            int count = 1;
+            for (int i = 0; i < testPic.allPixels[399].length; i++) {
+                System.out.println(Arrays.toString(testPic.allPixels[200][i]));
+                System.out.println(count);
+                count++;
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     public Picture() throws IOException {
         // gets the path of the file for the Files class to operate on
-        Path path = Paths.get("C:\\Users\\simon\\Desktop\\Automation\\Java Masterclass\\PNG_Filters\\Images\\stadium.bmp");
+        Path path = Paths.get("C:\\Users\\Anna\\IdeaProjects\\PNG_Filters\\Images\\stadium.bmp");
         this.path = path;
 
         // reads the file at path and saves all bytes to an array of bytes
@@ -43,7 +46,11 @@ public class Picture {
         // copies and stores the "clean" version - without headers
         this.cleanFileBytes = Arrays.copyOfRange(file, 55, file.length);
 
+        // initialise the header object
         this.header = new Header();
+
+        // generate the multidimensional array of integer values of the pixels
+        this.allPixels = generatePixelArray(this.cleanFileBytes);
     }
 
     private class Header {
@@ -67,6 +74,7 @@ public class Picture {
 
         public int widthValue;
         public int heightValue;
+        public int bitsPerPixelValue;
 
         public Header() {
             idField = Arrays.copyOfRange(header, 0, 2);
@@ -86,6 +94,7 @@ public class Picture {
 
             widthValue = getIntValue(this.width);
             heightValue = getIntValue(this.height);
+            bitsPerPixelValue = getIntValue(this.bitsPerPixel);
         }
 
         private int getIntValue(byte[] bytes) {
@@ -101,17 +110,41 @@ public class Picture {
         }
     }
 
+    // takes the "clean" bytes from the bmp file and creates a three-dimensional array
+    //
 
-    private class Pixel {
+    public int[][][] generatePixelArray(byte[] allBytes) {
+        int[][][] pixelArray = new int[this.header.heightValue][this.header.widthValue][3];
+        int byteIndex = 0;
 
-        // Define the pixel as a storage vessel for the 3 rgb values
-        // Picture is then a collection (resolution) of the pixels
-        // We can store here the values of each pixel's corresponding neighbor pixels
-        // for easier conversion operations
+        // Looping through each row of the Picture
+        for (int i = 0; i < this.header.heightValue; i++) {
+            // Looping through each column of the picture
+            for (int j = 0; j < this.header.widthValue; j++) {
+                // Looping through each pixel color value(GRB - green, red, blue)
+                for (int k = 0; k < 3; k++) {
+                    pixelArray[i][j][k] = getIntValue(Arrays.copyOfRange(allBytes, byteIndex, byteIndex+1));
+                    byteIndex++;
+//                    System.out.println(pixelArray[i][j][k]);
+                }
+            }
+        }
 
-
-
+        return pixelArray;
     }
+
+    private int getIntValue(byte[] bytes) {
+        int result = 0;
+        for (int i = 0; i < bytes.length; i++) {
+            if (i == 0) {
+                result |= bytes[i] << (0);
+            } else {
+                result |= bytes[i] << (8 * i);
+            }
+        }
+        return Math.abs(result);
+    }
+
 
     // stackoverflow method to convert byte array into hexadecimal string
     public static String bytesToHex(byte[] bytes) {
