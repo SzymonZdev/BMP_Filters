@@ -1,6 +1,4 @@
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -13,21 +11,8 @@ public class Picture {
     public byte[] cleanFileBytes;
     public Header header;
     public int[][][] allPixels;
-    private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
 
     public static void main(String[] args) {
-        try {
-            Picture testPic = new Picture();
-            int count = 1;
-            for (int i = 0; i < testPic.allPixels[399].length; i++) {
-                System.out.println(Arrays.toString(testPic.allPixels[200][i]));
-                System.out.println(count);
-                count++;
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public Picture() throws IOException {
@@ -125,7 +110,6 @@ public class Picture {
                 for (int k = 0; k < 3; k++) {
                     pixelArray[i][j][k] = getIntValue(Arrays.copyOfRange(allBytes, byteIndex, byteIndex+1));
                     byteIndex++;
-//                    System.out.println(pixelArray[i][j][k]);
                 }
             }
         }
@@ -145,37 +129,26 @@ public class Picture {
         return Math.abs(result);
     }
 
-
-    // stackoverflow method to convert byte array into hexadecimal string
-    public static String bytesToHex(byte[] bytes) {
-        char[] hexChars = new char[bytes.length * 2];
-        for (int j = 0; j < bytes.length; j++) {
-            int v = bytes[j] & 0xFF;
-            hexChars[j * 2] = HEX_ARRAY[v >>> 4];
-            hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
-        }
-        return new String(hexChars);
-    }
-
-    // stackoverflow method to create an ArrayList of strings of my pixels
-    public static List<String> hexStringArray(String hexString) {
-        List<String> strings = new ArrayList<String>();
+    // Need a method here to take the multi-dimensional array and create just a simple array of bytes
+    public static byte[] convertToByteArray(int[][][] pixelArray) {
+        if (pixelArray == null)
+            return null;
+        int[] singleDimension = new int[pixelArray.length];
         int index = 0;
-        while (index < hexString.length()) {
-            strings.add(hexString.substring(index, Math.min(index + 6,hexString.length())));
-            index += 6;
+        for (int[][] ints : pixelArray) {
+            for (int[] anInt : ints) {
+                for (int k = 0; k < 3; k++) {
+                    singleDimension[index] = anInt[k];
+                }
+            }
         }
 
-        return strings;
-    }
-
-    public static byte[] hexStringToByteArray(String s) {
-        int len = s.length();
-        byte[] data = new byte[len / 2];
-        for (int i = 0; i < len; i += 2) {
-            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
-                    + Character.digit(s.charAt(i+1), 16));
+        byte[] result = new byte[singleDimension.length];
+        int indexToo = 0;
+        for (int colorInt : singleDimension) {
+            result[indexToo] = (byte)colorInt;
         }
-        return data;
+
+        return result;
     }
 }

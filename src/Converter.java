@@ -1,28 +1,24 @@
-import java.util.ArrayList;
-import java.util.List;
-
 public class Converter {
 
-    public static List<String> greyScale(List<String> pixels) {
-        List<String> greyPixels = new ArrayList<>();
-        for (String pixel : pixels) {
-            int average;
-            if(pixel.length() < 6) {
-                average = 0;
-            } else {
-                String color1 = pixel.substring(0, 2);
-                String color2 = pixel.substring(2, 4);
-                String color3 = pixel.substring(4, 6);
-                average = (Integer.parseInt(color1, 16) + Integer.parseInt(color2, 16) + Integer.parseInt(color3, 16)) / 3;
+    public static int[][][] greyScale(int[][][] pixelArray) {
+        // Returns a multi-dimensional array of pixels that have been converted to a greyscale picture
+        int[][][] greyArray = pixelArray.clone();
+        // Loop through each dimension
+        // Looping through each row of the Picture
+        for (int i = 0; i < pixelArray.length; i++) {
+            // Looping through each column of the picture
+            for (int j = 0; j < pixelArray[i].length; j++) {
+                int averageNum = 0;
+                averageNum += pixelArray[i][j][0];
+                averageNum += pixelArray[i][j][1];
+                averageNum += pixelArray[i][j][2];
+                averageNum = averageNum/3;
+                // Looping through each pixel color value(GRB - green, red, blue)
+                for (int k = 0; k < 3; k++) {
+                    greyArray[i][j][k] = averageNum;
+                }
             }
-            String hexAverage = "";
-            if(average <= 15) {
-                hexAverage = "0" + Integer.toHexString(average) + "0" + Integer.toHexString(average) + "0" + Integer.toHexString(average);
-            } else {
-                hexAverage = Integer.toHexString(average) + Integer.toHexString(average) + Integer.toHexString(average);
-            }
-            greyPixels.add(hexAverage);
         }
-        return greyPixels;
+        return greyArray;
     }
 }
