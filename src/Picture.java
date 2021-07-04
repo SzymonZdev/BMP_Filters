@@ -23,7 +23,7 @@ public class Picture {
 
     public Picture() throws IOException {
         // gets the path of the file for the Files class to operate on
-        Path path = Paths.get("C:\\Users\\Anna\\IdeaProjects\\PNG_Filters\\Images\\stadium.bmp");
+        Path path = Paths.get("C:\\Users\\simon\\Desktop\\Automation\\Java Masterclass\\BMP_Filters\\Images\\courtyard.bmp");
         this.path = path;
 
         // reads the file at path and saves all bytes to an array of bytes
@@ -88,9 +88,13 @@ public class Picture {
             bitsPerPixelValue = getIntValue(this.bitsPerPixel);
         }
 
+
+        // Stackoverflow method to little-endian convert the byte array into an integer value
         private int getIntValue(byte[] bytes) {
             int result = 0;
+            // loop through the values
             for (int i = 0; i < bytes.length; i++) {
+                // shifting the bits depending on where in the byte array they are
                 if (i == 0) {
                     result |= bytes[i] << (0);
                 } else {
@@ -150,9 +154,9 @@ public class Picture {
         ArrayList<Integer> resultList = new ArrayList<>();
         for (int i = 0; i < pixelArray.length; i++) {
             for (int j = 0; j < pixelArray[0].length; j++) {
-                resultList.add(pixelArray[i][j][0] + pixelArray[i][j][1] + pixelArray[i][j][2]);
-//                for (int k = 0; k < pixelArray[0][0].length; k++) {
-//                }
+                for (int k = 0; k < pixelArray[0][0].length; k++) {
+                    resultList.add(pixelArray[i][j][k]);
+                }
             }
         }
         return resultList.toArray(new Integer[0]);
@@ -161,15 +165,18 @@ public class Picture {
 
     // Then convert that single array of integers to an array of bytes
     public static byte[] convertToByteArray(Integer[] pixelArray) {
-        int[] data = new int[pixelArray.length];
-        for (int i = 0; i < data.length; i++) {
-            data[i] = pixelArray[i];
+        byte[] convertedArray = new byte[pixelArray.length];
+        int index = 0;
+
+        for (Integer value : pixelArray) {
+            convertedArray[index] = value.byteValue();
+            index++;
         }
 
-        ByteBuffer byteBuffer = ByteBuffer.allocate(data.length * 4);
-        IntBuffer intBuffer = byteBuffer.asIntBuffer();
-        intBuffer.put(data);
+        ByteBuffer bb = ByteBuffer.wrap(convertedArray);
+        bb.order(ByteOrder.LITTLE_ENDIAN);
+        convertedArray = bb.array();
 
-        return byteBuffer.array();
+        return convertedArray;
     }
 }

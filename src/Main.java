@@ -7,17 +7,19 @@ public class Main {
     public static void main(String[] args) throws IOException {
 
         Picture picture = new Picture();
+        System.out.println("The length of cleanFileBytes is " + picture.cleanFileBytes.length);
+        System.out.println("The length of allPixels is " + picture.allPixels.length * picture.allPixels[0].length * 3);
         int[][][] convertedPixels = Converter.greyScale(picture.allPixels);
-        System.out.println(convertedPixels.length * convertedPixels[0].length);
+        System.out.println("The length of grey convertedPixels is " + convertedPixels.length * convertedPixels[0].length * 3);
 
         Integer[] singleDimension = Picture.convertToOneDimension(convertedPixels);
-        System.out.println(singleDimension.length);
+        System.out.println("The length of the singleDimension is " + singleDimension.length);
 
         byte[] array = Picture.convertToByteArray(singleDimension);
-        System.out.println(array.length);
+        System.out.println("The length of the converted byte array is " + array.length);
 
         byte[] combinedConverted = picture.createConvertedFile(array);
-        System.out.println(combinedConverted.length);
+        System.out.println("The length of the combined, final byte array is " + combinedConverted.length);
 
         Path convertedPath = Paths.get("Images\\converted\\grey.bmp");
         Files.write(convertedPath, combinedConverted);
