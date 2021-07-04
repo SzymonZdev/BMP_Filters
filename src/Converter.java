@@ -2,7 +2,7 @@ public class Converter {
 
     public static int[][][] greyScale(int[][][] pixelArray) {
         // Returns a multi-dimensional array of pixels that have been converted to a greyscale picture
-        int[][][] greyArray = pixelArray.clone();
+        int[][][] greyArray = new int[pixelArray.length][pixelArray[0].length][pixelArray[0][0].length];
         // Loop through each dimension
         // Looping through each row of the Picture
         for (int i = 0; i < pixelArray.length; i++) {

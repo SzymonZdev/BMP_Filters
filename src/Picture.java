@@ -1,8 +1,14 @@
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.IntBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.IntStream;
 
 public class Picture {
     public Path path;
@@ -113,8 +119,17 @@ public class Picture {
                 }
             }
         }
-
         return pixelArray;
+    }
+
+    public byte[] createConvertedFile(byte[] convertedBytes) {
+        byte[] allByteArray = new byte[this.fileHeaderBytes.length + convertedBytes.length];
+
+        ByteBuffer buff = ByteBuffer.wrap(allByteArray);
+        buff.put(this.fileHeaderBytes);
+        buff.put(convertedBytes);
+
+        return buff.array();
     }
 
     private int getIntValue(byte[] bytes) {
@@ -129,26 +144,32 @@ public class Picture {
         return Math.abs(result);
     }
 
-    // Need a method here to take the multi-dimensional array and create just a simple array of bytes
-    public static byte[] convertToByteArray(int[][][] pixelArray) {
-        if (pixelArray == null)
-            return null;
-        int[] singleDimension = new int[pixelArray.length];
-        int index = 0;
-        for (int[][] ints : pixelArray) {
-            for (int[] anInt : ints) {
-                for (int k = 0; k < 3; k++) {
-                    singleDimension[index] = anInt[k];
-                }
+    // Separated one method into two distinct problems
+    // First compress the multi dimensional array into a simple array
+    public static Integer[] convertToOneDimension(int[][][] pixelArray) {
+        ArrayList<Integer> resultList = new ArrayList<>();
+        for (int i = 0; i < pixelArray.length; i++) {
+            for (int j = 0; j < pixelArray[0].length; j++) {
+                resultList.add(pixelArray[i][j][0] + pixelArray[i][j][1] + pixelArray[i][j][2]);
+//                for (int k = 0; k < pixelArray[0][0].length; k++) {
+//                }
             }
         }
+        return resultList.toArray(new Integer[0]);
+    }
 
-        byte[] result = new byte[singleDimension.length];
-        int indexToo = 0;
-        for (int colorInt : singleDimension) {
-            result[indexToo] = (byte)colorInt;
+
+    // Then convert that single array of integers to an array of bytes
+    public static byte[] convertToByteArray(Integer[] pixelArray) {
+        int[] data = new int[pixelArray.length];
+        for (int i = 0; i < data.length; i++) {
+            data[i] = pixelArray[i];
         }
 
-        return result;
+        ByteBuffer byteBuffer = ByteBuffer.allocate(data.length * 4);
+        IntBuffer intBuffer = byteBuffer.asIntBuffer();
+        intBuffer.put(data);
+
+        return byteBuffer.array();
     }
 }

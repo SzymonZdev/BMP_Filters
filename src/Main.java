@@ -1,5 +1,4 @@
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -9,18 +8,18 @@ public class Main {
 
         Picture picture = new Picture();
         int[][][] convertedPixels = Converter.greyScale(picture.allPixels);
+        System.out.println(convertedPixels.length * convertedPixels[0].length);
 
-        byte[] array = Picture.convertToByteArray(convertedPixels);
+        Integer[] singleDimension = Picture.convertToOneDimension(convertedPixels);
+        System.out.println(singleDimension.length);
 
-        byte[] allByteArray = new byte[picture.fileHeaderBytes.length + array.length];
+        byte[] array = Picture.convertToByteArray(singleDimension);
+        System.out.println(array.length);
 
-        ByteBuffer buff = ByteBuffer.wrap(allByteArray);
-        buff.put(picture.fileHeaderBytes);
-        buff.put(array);
-
-        byte[] combined = buff.array();
+        byte[] combinedConverted = picture.createConvertedFile(array);
+        System.out.println(combinedConverted.length);
 
         Path convertedPath = Paths.get("Images\\converted\\grey.bmp");
-        Files.write(convertedPath, combined);
+        Files.write(convertedPath, combinedConverted);
     }
 }
