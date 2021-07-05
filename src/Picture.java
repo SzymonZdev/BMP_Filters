@@ -1,14 +1,11 @@
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.IntBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
-import java.util.stream.IntStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Picture {
     public Path path;
@@ -23,19 +20,17 @@ public class Picture {
 
     public Picture() throws IOException {
         // gets the path of the file for the Files class to operate on
-        Path path = Paths.get("C:\\Users\\simon\\Desktop\\Automation\\Java Masterclass\\BMP_Filters\\Images\\courtyard.bmp");
-        this.path = path;
+        //TODO lepiej byłoby stworzyć konstruktor z parametrem, do którego się przekaże path z Main
+        this.path = Paths.get("Images/courtyard.bmp");
 
         // reads the file at path and saves all bytes to an array of bytes
-        byte[] file = Files.readAllBytes(path);
-
-        this.allBytes = file;
+        this.allBytes = Files.readAllBytes(path);
 
         // copies and stores the 54 Byte header file
-        this.fileHeaderBytes = Arrays.copyOfRange(file, 0, 54);
+        this.fileHeaderBytes = Arrays.copyOfRange(allBytes, 0, 54);
 
         // copies and stores the "clean" version - without headers
-        this.cleanFileBytes = Arrays.copyOfRange(file, 55, file.length);
+        this.cleanFileBytes = Arrays.copyOfRange(allBytes, 55, allBytes.length);
 
         // initialise the header object
         this.header = new Header();
@@ -44,6 +39,7 @@ public class Picture {
         this.allPixels = generatePixelArray(this.cleanFileBytes);
     }
 
+    //TODO tutaj mi jakoś to nie pasuje z tym headerem
     private class Header {
 
         public byte[] header = fileHeaderBytes;
@@ -88,8 +84,8 @@ public class Picture {
             bitsPerPixelValue = getIntValue(this.bitsPerPixel);
         }
 
-
         // Stackoverflow method to little-endian convert the byte array into an integer value
+        //TODO to powinno być w innej klasie, jakimś extensionMethod, bo nie jest to atrybut nagłowka
         private int getIntValue(byte[] bytes) {
             int result = 0;
             // loop through the values
@@ -107,7 +103,7 @@ public class Picture {
 
     // takes the "clean" bytes from the bmp file and creates a three-dimensional array
     //
-
+    //TODO to tak samo do exstensionMethod
     public int[][][] generatePixelArray(byte[] allBytes) {
         int[][][] pixelArray = new int[this.header.heightValue][this.header.widthValue][3];
         int byteIndex = 0;
@@ -125,7 +121,7 @@ public class Picture {
         }
         return pixelArray;
     }
-
+    //TODO to tak samo
     public byte[] createConvertedFile(byte[] convertedBytes) {
         byte[] allByteArray = new byte[this.fileHeaderBytes.length + convertedBytes.length];
 
@@ -135,7 +131,7 @@ public class Picture {
 
         return buff.array();
     }
-
+    //TODO ogólnie wszystkie takie metody powinny być w jakimś extensionMethod pogrupowane, możesz z tego zrobić jakąś bibliotekę, która może być zarządzana oddzielnie
     private int getIntValue(byte[] bytes) {
         int result = 0;
         for (int i = 0; i < bytes.length; i++) {
@@ -152,10 +148,11 @@ public class Picture {
     // First compress the multi dimensional array into a simple array
     public static Integer[] convertToOneDimension(int[][][] pixelArray) {
         ArrayList<Integer> resultList = new ArrayList<>();
-        for (int i = 0; i < pixelArray.length; i++) {
+        //TODO to akurat była sugestia IntelliJ
+        for (int[][] ints : pixelArray) {
             for (int j = 0; j < pixelArray[0].length; j++) {
                 for (int k = 0; k < pixelArray[0][0].length; k++) {
-                    resultList.add(pixelArray[i][j][k]);
+                    resultList.add(ints[j][k]);
                 }
             }
         }

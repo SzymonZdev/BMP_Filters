@@ -26,6 +26,7 @@ public class Converter {
 //        // Returns a multi-dimensional array of pixels that have been converted to a greyscale picture
 //        int[][][] reflectedArray = new int[pixelArray.length][pixelArray[0].length][pixelArray[0][0].length];
 //        // Loop through each dimension
+//        // Loop through each dimension
 //        // Looping through each row of the Picture
 //        for (int i = 0; i < pixelArray.length; i++) {
 //                // Looping through each column of the picture
