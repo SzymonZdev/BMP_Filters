@@ -16,12 +16,26 @@ public class Picture {
     public int[][][] allPixels;
 
     public static void main(String[] args) {
+        try {
+            Picture testPicture = new Picture();
+
+            Integer[] singleDimension = Picture.convertToOneDimension(testPicture.allPixels);
+            byte[] array = Picture.convertToByteArray(singleDimension);
+            byte[] combinedConverted = testPicture.createConvertedFile(array);
+            Path convertedPath = Paths.get("Images\\converted\\test.bmp");
+            Files.write(convertedPath, combinedConverted);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     public Picture() throws IOException {
         // gets the path of the file for the Files class to operate on
         //TODO lepiej byłoby stworzyć konstruktor z parametrem, do którego się przekaże path z Main
-        this.path = Paths.get("Images/courtyard.bmp");
+        this.path = Paths.get("Images\\courtyard.bmp");
 
         // reads the file at path and saves all bytes to an array of bytes
         this.allBytes = Files.readAllBytes(path);
@@ -40,7 +54,7 @@ public class Picture {
     }
 
     //TODO tutaj mi jakoś to nie pasuje z tym headerem
-    private class Header {
+    public class Header {
 
         public byte[] header = fileHeaderBytes;
 
@@ -62,6 +76,7 @@ public class Picture {
         public int widthValue;
         public int heightValue;
         public int bitsPerPixelValue;
+        public int offSetForPixelsValue;
 
         public Header() {
             idField = Arrays.copyOfRange(header, 0, 2);
@@ -82,6 +97,7 @@ public class Picture {
             widthValue = getIntValue(this.width);
             heightValue = getIntValue(this.height);
             bitsPerPixelValue = getIntValue(this.bitsPerPixel);
+            offSetForPixelsValue = getIntValue(this.offSetForPixels);
         }
 
         // Stackoverflow method to little-endian convert the byte array into an integer value
@@ -133,22 +149,21 @@ public class Picture {
     }
     //TODO ogólnie wszystkie takie metody powinny być w jakimś extensionMethod pogrupowane, możesz z tego zrobić jakąś bibliotekę, która może być zarządzana oddzielnie
     private int getIntValue(byte[] bytes) {
-        int result = 0;
-        for (int i = 0; i < bytes.length; i++) {
-            if (i == 0) {
-                result |= bytes[i] << (0);
-            } else {
-                result |= bytes[i] << (8 * i);
-            }
+        ByteBuffer bb = ByteBuffer.wrap(bytes);
+        bb.order(ByteOrder.LITTLE_ENDIAN);
+        byte[] endiannes = bb.array();
+        int sum = 0;
+        for (byte byteValue : endiannes) {
+            sum += Byte.toUnsignedInt(byteValue);
         }
-        return Math.abs(result);
+        return sum;
     }
+
 
     // Separated one method into two distinct problems
     // First compress the multi dimensional array into a simple array
     public static Integer[] convertToOneDimension(int[][][] pixelArray) {
         ArrayList<Integer> resultList = new ArrayList<>();
-        //TODO to akurat była sugestia IntelliJ
         for (int[][] ints : pixelArray) {
             for (int j = 0; j < pixelArray[0].length; j++) {
                 for (int k = 0; k < pixelArray[0][0].length; k++) {

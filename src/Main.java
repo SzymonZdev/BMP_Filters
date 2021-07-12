@@ -22,8 +22,9 @@ public class Main {
         byte[] combinedConverted = picture.createConvertedFile(array);
         System.out.println("The length of the combined, final byte array is " + combinedConverted.length);
 
-        //TODO to musiałem zkaomentować, bo mi się nie chciało odpalić
-        // Path convertedPath = Paths.get("Images\\converted\\grey.bmp");
-        // Files.write(convertedPath, combinedConverted);
+
+
+         Path convertedPath = Paths.get("Images\\converted\\grey.bmp");
+         Files.write(convertedPath, combinedConverted);
     }
 }
