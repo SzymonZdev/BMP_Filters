@@ -22,21 +22,29 @@ public class Converter {
         return greyArray;
     }
 
-//    public static int[][][] reflection(int[][][] pixelArray) {
-//        // Returns a multi-dimensional array of pixels that have been converted to a greyscale picture
-//        int[][][] reflectedArray = new int[pixelArray.length][pixelArray[0].length][pixelArray[0][0].length];
-//        // Loop through each dimension
-//        // Loop through each dimension
-//        // Looping through each row of the Picture
-//        for (int i = 0; i < pixelArray.length; i++) {
-//                // Looping through each column of the picture
-//                for (int j = 0; j < pixelArray[i].length; j++) {
-//                        // Looping through each pixel color value(GRB - green, red, blue)
-//                        for (int k = 0; k < 3; k++) {
-//                                reflectedArray[reflectedArray.length - 1 - i][reflectedArray[0].length - 1 - j][reflectedArray[0][0].length - 1 - k] = pixelArray[i][j][k];
-//                        }
-//                    }
-//        }
-//        return reflectedArray;
-//    }
+    public static int[][][] reflectionY(int[][][] pixelArray) {
+        // Initialize the new array to store the transformed values
+        int[][][] reflectedArray = new int[pixelArray.length][pixelArray[0].length][pixelArray[0][0].length];
+        // Loop through each dimension
+        // Looping through each row of the Picture
+        for (int i = 0; i < pixelArray.length; i++) {
+                // Looping through each column of the picture, changing the reflected values to be at the other end of the row
+                for (int j = 0; j < pixelArray[i].length; j++) {
+                        reflectedArray[i][reflectedArray[0].length-1-j] = pixelArray[i][j];
+                    }
+        }
+        return reflectedArray;
+    }
+
+    public static int[][][] reflectionX(int[][][] pixelArray) {
+        // Initialize the new array to store the transformed values
+        int[][][] reflectedArray = new int[pixelArray.length][pixelArray[0].length][pixelArray[0][0].length];
+        // Loop through each dimension
+        // Looping through each row of the Picture
+        for (int i = 0; i < pixelArray.length; i++) {
+                // Looping through each column of the picture, changing the reflected values to be at the other end of the row
+            reflectedArray[reflectedArray.length-1-i] = pixelArray[i];
+        }
+        return reflectedArray;
+    }
 }

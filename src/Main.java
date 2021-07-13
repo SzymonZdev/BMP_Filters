@@ -7,7 +7,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
 
         Picture picture = new Picture();
-        int[][][] convertedPixels = Converter.greyScale(picture.allPixels);
+        int[][][] convertedPixels = Converter.reflectionX(picture.allPixels);
         Integer[] singleDimension = Picture.convertToOneDimension(convertedPixels);
         byte[] array = Picture.convertToByteArray(singleDimension);
         byte[] combinedConverted = picture.createConvertedFile(array);
