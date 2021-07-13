@@ -16,26 +16,12 @@ public class Picture {
     public int[][][] allPixels;
 
     public static void main(String[] args) {
-        try {
-            Picture testPicture = new Picture();
-
-            Integer[] singleDimension = Picture.convertToOneDimension(testPicture.allPixels);
-            byte[] array = Picture.convertToByteArray(singleDimension);
-            byte[] combinedConverted = testPicture.createConvertedFile(array);
-            Path convertedPath = Paths.get("Images\\converted\\test.bmp");
-            Files.write(convertedPath, combinedConverted);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
     }
 
     public Picture() throws IOException {
         // gets the path of the file for the Files class to operate on
         //TODO lepiej byłoby stworzyć konstruktor z parametrem, do którego się przekaże path z Main
-        this.path = Paths.get("Images\\courtyard.bmp");
+        this.path = Paths.get("Images\\tower.bmp");
 
         // reads the file at path and saves all bytes to an array of bytes
         this.allBytes = Files.readAllBytes(path);
@@ -44,7 +30,7 @@ public class Picture {
         this.fileHeaderBytes = Arrays.copyOfRange(allBytes, 0, 54);
 
         // copies and stores the "clean" version - without headers
-        this.cleanFileBytes = Arrays.copyOfRange(allBytes, 55, allBytes.length);
+        this.cleanFileBytes = Arrays.copyOfRange(allBytes, 54, allBytes.length);
 
         // initialise the header object
         this.header = new Header();
@@ -92,7 +78,7 @@ public class Picture {
             rawSize = Arrays.copyOfRange(header, 34, 38);
             printResolution = Arrays.copyOfRange(header, 38, 46);
             numberColors = Arrays.copyOfRange(header, 46, 50);
-            importantColors = Arrays.copyOfRange(header, 50, 54);
+            importantColors = Arrays.copyOfRange(header, 50, 55);
 
             widthValue = getIntValue(this.width);
             heightValue = getIntValue(this.height);
@@ -150,7 +136,7 @@ public class Picture {
     //TODO ogólnie wszystkie takie metody powinny być w jakimś extensionMethod pogrupowane, możesz z tego zrobić jakąś bibliotekę, która może być zarządzana oddzielnie
     private int getIntValue(byte[] bytes) {
         ByteBuffer bb = ByteBuffer.wrap(bytes);
-        bb.order(ByteOrder.LITTLE_ENDIAN);
+        bb.order(ByteOrder.BIG_ENDIAN);
         byte[] endiannes = bb.array();
         int sum = 0;
         for (byte byteValue : endiannes) {
