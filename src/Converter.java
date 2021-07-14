@@ -42,9 +42,17 @@ public class Converter {
         // Loop through each dimension
         // Looping through each row of the Picture
         for (int i = 0; i < pixelArray.length; i++) {
-                // Looping through each column of the picture, changing the reflected values to be at the other end of the row
+                // Looping through each row of the picture, changing the reflected values to be at the other end of the column
             reflectedArray[reflectedArray.length-1-i] = pixelArray[i];
         }
         return reflectedArray;
     }
+
+    // rotate?
+
+    // negative colors?
+
+    // lose focus?
+
+    // others?
 }

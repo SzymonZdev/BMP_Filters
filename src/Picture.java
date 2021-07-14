@@ -3,7 +3,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -18,10 +17,9 @@ public class Picture {
     public static void main(String[] args) {
     }
 
-    public Picture() throws IOException {
+    public Picture(Path pathFile) throws IOException {
         // gets the path of the file for the Files class to operate on
-        //TODO lepiej byłoby stworzyć konstruktor z parametrem, do którego się przekaże path z Main
-        this.path = Paths.get("Images\\tower.bmp");
+        this.path = pathFile;
 
         // reads the file at path and saves all bytes to an array of bytes
         this.allBytes = Files.readAllBytes(path);
@@ -124,7 +122,7 @@ public class Picture {
         return pixelArray;
     }
     //TODO to tak samo
-    public byte[] createConvertedFile(byte[] convertedBytes) {
+    private byte[] createConvertedFile(byte[] convertedBytes) {
         byte[] allByteArray = new byte[this.fileHeaderBytes.length + convertedBytes.length];
 
         ByteBuffer buff = ByteBuffer.wrap(allByteArray);
@@ -148,7 +146,7 @@ public class Picture {
 
     // Separated one method into two distinct problems
     // First compress the multi dimensional array into a simple array
-    public static Integer[] convertToOneDimension(int[][][] pixelArray) {
+    private static Integer[] convertToOneDimension(int[][][] pixelArray) {
         ArrayList<Integer> resultList = new ArrayList<>();
         for (int[][] ints : pixelArray) {
             for (int j = 0; j < pixelArray[0].length; j++) {
@@ -162,7 +160,7 @@ public class Picture {
 
 
     // Then convert that single array of integers to an array of bytes
-    public static byte[] convertToByteArray(Integer[] pixelArray) {
+   private byte[] convertToByteArray(Integer[] pixelArray) {
         byte[] convertedArray = new byte[pixelArray.length];
         int index = 0;
 
@@ -170,11 +168,16 @@ public class Picture {
             convertedArray[index] = value.byteValue();
             index++;
         }
-
         ByteBuffer bb = ByteBuffer.wrap(convertedArray);
         bb.order(ByteOrder.LITTLE_ENDIAN);
         convertedArray = bb.array();
 
         return convertedArray;
+    }
+
+    public byte[] createFile(int[][][] latestPixelArray){
+        Integer[] singleDimension = Picture.convertToOneDimension(latestPixelArray);
+        byte[] array = this.convertToByteArray(singleDimension);
+        return createConvertedFile(array);
     }
 }
