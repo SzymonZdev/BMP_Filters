@@ -14,9 +14,6 @@ public class Picture {
     public Header header;
     public int[][][] allPixels;
 
-    public static void main(String[] args) {
-    }
-
     public Picture(Path pathFile) throws IOException {
         // gets the path of the file for the Files class to operate on
         this.path = pathFile;
@@ -37,7 +34,6 @@ public class Picture {
         this.allPixels = generatePixelArray(this.cleanFileBytes);
     }
 
-    //TODO tutaj mi jakoś to nie pasuje z tym headerem
     public class Header {
 
         public byte[] header = fileHeaderBytes;
@@ -102,7 +98,6 @@ public class Picture {
     }
 
     // takes the "clean" bytes from the bmp file and creates a three-dimensional array
-    //
     //TODO to tak samo do exstensionMethod
     public int[][][] generatePixelArray(byte[] allBytes) {
         int[][][] pixelArray = new int[this.header.heightValue][this.header.widthValue][3];
@@ -114,13 +109,14 @@ public class Picture {
             for (int j = 0; j < this.header.widthValue; j++) {
                 // Looping through each pixel color value(GRB - green, red, blue)
                 for (int k = 0; k < 3; k++) {
-                    pixelArray[i][j][k] = getIntValue(Arrays.copyOfRange(allBytes, byteIndex, byteIndex+1));
+                    pixelArray[i][j][k] = getIntValue(Arrays.copyOfRange(allBytes, byteIndex, byteIndex + 1));
                     byteIndex++;
                 }
             }
         }
         return pixelArray;
     }
+
     //TODO to tak samo
     private byte[] createConvertedFile(byte[] convertedBytes) {
         byte[] allByteArray = new byte[this.fileHeaderBytes.length + convertedBytes.length];
@@ -131,6 +127,7 @@ public class Picture {
 
         return buff.array();
     }
+
     //TODO ogólnie wszystkie takie metody powinny być w jakimś extensionMethod pogrupowane, możesz z tego zrobić jakąś bibliotekę, która może być zarządzana oddzielnie
     private int getIntValue(byte[] bytes) {
         ByteBuffer bb = ByteBuffer.wrap(bytes);
@@ -142,7 +139,6 @@ public class Picture {
         }
         return sum;
     }
-
 
     // Separated one method into two distinct problems
     // First compress the multi dimensional array into a simple array
@@ -158,9 +154,8 @@ public class Picture {
         return resultList.toArray(new Integer[0]);
     }
 
-
     // Then convert that single array of integers to an array of bytes
-   private byte[] convertToByteArray(Integer[] pixelArray) {
+    private byte[] convertToByteArray(Integer[] pixelArray) {
         byte[] convertedArray = new byte[pixelArray.length];
         int index = 0;
 
@@ -175,7 +170,7 @@ public class Picture {
         return convertedArray;
     }
 
-    public byte[] createFile(int[][][] latestPixelArray){
+    public byte[] createFile(int[][][] latestPixelArray) {
         Integer[] singleDimension = Picture.convertToOneDimension(latestPixelArray);
         byte[] array = this.convertToByteArray(singleDimension);
         return createConvertedFile(array);

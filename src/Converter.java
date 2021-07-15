@@ -12,7 +12,7 @@ public class Converter {
                 averageNum += pixelArray[i][j][0];
                 averageNum += pixelArray[i][j][1];
                 averageNum += pixelArray[i][j][2];
-                averageNum = averageNum/3;
+                averageNum = averageNum / 3;
                 // Looping through each pixel color value(GRB - green, red, blue)
                 for (int k = 0; k < 3; k++) {
                     greyArray[i][j][k] = averageNum;
@@ -28,10 +28,10 @@ public class Converter {
         // Loop through each dimension
         // Looping through each row of the Picture
         for (int i = 0; i < pixelArray.length; i++) {
-                // Looping through each column of the picture, changing the reflected values to be at the other end of the row
-                for (int j = 0; j < pixelArray[i].length; j++) {
-                        reflectedArray[i][reflectedArray[0].length-1-j] = pixelArray[i][j];
-                    }
+            // Looping through each column of the picture, changing the reflected values to be at the other end of the row
+            for (int j = 0; j < pixelArray[i].length; j++) {
+                reflectedArray[i][reflectedArray[0].length - 1 - j] = pixelArray[i][j];
+            }
         }
         return reflectedArray;
     }
@@ -42,15 +42,30 @@ public class Converter {
         // Loop through each dimension
         // Looping through each row of the Picture
         for (int i = 0; i < pixelArray.length; i++) {
-                // Looping through each row of the picture, changing the reflected values to be at the other end of the column
-            reflectedArray[reflectedArray.length-1-i] = pixelArray[i];
+            // Looping through each row of the picture, changing the reflected values to be at the other end of the column
+            reflectedArray[reflectedArray.length - 1 - i] = pixelArray[i];
         }
         return reflectedArray;
     }
 
-    // rotate?
+    public static int[][][] negative(int[][][] pixelArray) {
+        // Returns a multi-dimensional array of pixels that have been converted to a greyscale picture
+        int[][][] negativeArray = new int[pixelArray.length][pixelArray[0].length][pixelArray[0][0].length];
+        // Loop through each dimension
+        // Looping through each row of the Picture
+        for (int i = 0; i < pixelArray.length; i++) {
+            // Looping through each column of the picture
+            for (int j = 0; j < pixelArray[i].length; j++) {
+                // Looping through each pixel color value(GRB - green, red, blue)
+                for (int k = 0; k < 3; k++) {
+                    negativeArray[i][j][k] = 255 - pixelArray[i][j][k];
+                }
+            }
+        }
+        return negativeArray;
+    }
 
-    // negative colors?
+    // rotate?
 
     // lose focus?
 

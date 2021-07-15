@@ -1,5 +1,6 @@
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -34,29 +35,44 @@ public class Main {
         panel.setLayout(null);
         panel.setDoubleBuffered(true);
 
-        JLabel userLabel = new JLabel("Operations:");
-        userLabel.setBounds(10, 20, 80, 25);
-        panel.add(userLabel);
+//        JLabel userLabel = new JLabel("Operations:");
+//        userLabel.setBounds(10, 20, 80, 25);
+//        panel.add(userLabel);
 
 
         JLabel pictureName = new JLabel();
-        pictureName.setBounds(200, 50, 200, 25);
+        pictureName.setBounds(20, 50, 200, 25);
 
         JLabel pictureConverted = new JLabel();
-        pictureConverted.setBounds(200, 80, 200, 25);
+        pictureConverted.setBounds(210, 80, 200, 25);
+        pictureConverted.setForeground(Color.GREEN);
 
         JLabel pictureDownloaded = new JLabel();
         pictureDownloaded.setBounds(200, 110, 200, 25);
 
-        JButton convertTheImage = new JButton("Convert the image");//creating instance of JButton
-        convertTheImage.setBounds(10, 80, 180, 25);//x axis, y axis, width, height
-        //adding button
+        final String[] transformOptions = new String[]{"Grey", "Reflect-Y", "Reflect-X", "Negative"};
+        JComboBox<String> transformOptionsCombo = new JComboBox<>(transformOptions);
+        transformOptionsCombo.setBounds(10, 80, 90, 25);
+
+        JButton downloadTheConvertedImage = new JButton("Download the image");//creating instance of JButton
+        downloadTheConvertedImage.setBounds(10, 110, 180, 25);//x axis, y axis, width, height
+        downloadTheConvertedImage.addActionListener(e -> {
+            saveFile();
+            pictureDownloaded.setText("Image downloaded!");
+            panel.add(pictureDownloaded);
+            panel.revalidate();
+            panel.repaint();
+        });
+
+        JButton convertTheImage = new JButton("Convert!");//creating instance of JButton
+        convertTheImage.setBounds(100, 80, 100, 25);//x axis, y axis, width, height
         convertTheImage.addActionListener(e -> {
             try {
                 userPicture = new Picture(picture);
-                latestPixelArray = Converter.greyScale(userPicture.allPixels);
+                latestPixelArray = callConvert(latestPixelArray, String.valueOf(transformOptionsCombo.getSelectedItem()));
                 pictureConverted.setText("Image converted!");
                 panel.add(pictureConverted);
+                panel.add(downloadTheConvertedImage);
                 panel.revalidate();
                 panel.repaint();
             } catch (IOException ioException) {
@@ -64,32 +80,21 @@ public class Main {
             }
         });
 
-
-        JButton yourBmpPicture = new JButton("Choose your BMP picture");//creating instance of JButton
-        yourBmpPicture.setBounds(10, 50, 180, 25);//x axis, y axis, width, height
-        panel.add(yourBmpPicture);//adding button
-        yourBmpPicture.addActionListener(e -> {
+        JButton uploadPicture = new JButton("Choose your BMP picture");//creating instance of JButton
+        uploadPicture.setBounds(10, 20, 180, 25);//x axis, y axis, width, height
+        panel.add(uploadPicture);//adding button
+        uploadPicture.addActionListener(e -> {
             picture = getFile();
             if (fileLoaded && picture != null) {
                 pictureName.setText("Image chosen: " + picture.getFileName().toString());
                 panel.add(pictureName);
+                panel.add(transformOptionsCombo);
                 panel.add(convertTheImage);
             }
             panel.revalidate();
             panel.repaint();
         });
 
-        JButton downloadTheImage = new JButton("Download the image");//creating instance of JButton
-        downloadTheImage.setBounds(10, 110, 180, 25);//x axis, y axis, width, height
-        panel.add(downloadTheImage);//adding button
-        downloadTheImage.addActionListener(e -> {
-            saveFile();
-            pictureDownloaded.setText("Image downloaded!");
-            panel.add(pictureDownloaded);
-            panel.add(convertTheImage);
-            panel.revalidate();
-            panel.repaint();
-        });
 
         JButton exit = new JButton();//creating instance of JButton
         ImageIcon img = new ImageIcon(".\\Resources\\Icon\\exit_icon.png");
@@ -97,6 +102,22 @@ public class Main {
         exit.setBounds(350, 180, 60, 25);//x axis, y axis, width, height
         panel.add(exit);//adding button
         exit.addActionListener(e -> System.exit(0));
+    }
+
+    private static int[][][] callConvert(int[][][] latestPixelArray, String optionChosen) {
+        switch (optionChosen) {
+            case "Grey":
+                return Converter.greyScale(userPicture.allPixels);
+            case "Reflect-Y":
+                return Converter.reflectionY(userPicture.allPixels);
+            case "Reflect-X":
+                return Converter.reflectionX(userPicture.allPixels);
+            case "Negative":
+                return Converter.negative(userPicture.allPixels);
+            default:
+                System.out.println("Something went wrong while converting!");
+                return null;
+        }
     }
 
     private static Path getFile() {
