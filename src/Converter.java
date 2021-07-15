@@ -39,7 +39,6 @@ public class Converter {
     public static int[][][] reflectionX(int[][][] pixelArray) {
         // Initialize the new array to store the transformed values
         int[][][] reflectedArray = new int[pixelArray.length][pixelArray[0].length][pixelArray[0][0].length];
-        // Loop through each dimension
         // Looping through each row of the Picture
         for (int i = 0; i < pixelArray.length; i++) {
             // Looping through each row of the picture, changing the reflected values to be at the other end of the column
@@ -56,7 +55,7 @@ public class Converter {
         for (int i = 0; i < pixelArray.length; i++) {
             // Looping through each column of the picture
             for (int j = 0; j < pixelArray[i].length; j++) {
-                // Looping through each pixel color value(GRB - green, red, blue)
+                // Looping through each pixel color value(GRB - green, red, blue), subtract that value from the maximum color value to get the inverse
                 for (int k = 0; k < 3; k++) {
                     negativeArray[i][j][k] = 255 - pixelArray[i][j][k];
                 }
@@ -66,6 +65,18 @@ public class Converter {
     }
 
     // rotate?
+//    public static int[][][] rotateClock90(int[][][] pixelArray) {
+//        // Returns a multi-dimensional array of pixels that have been converted to a greyscale picture
+//        int[][][] rotatedArray = new int[pixelArray[0].length][pixelArray.length][pixelArray[0][0].length];
+//        // Loop through each dimension
+//        // Looping through each row of the Picture
+//        for (int i = 0; i < pixelArray.length; i++) {
+//            // Looping through each column of the picture
+//            for (int j = 0; j < pixelArray[i].length; j++) {
+//            }
+//        }
+//        return rotatedArray;
+//    }
 
     // lose focus?
 

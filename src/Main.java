@@ -1,6 +1,5 @@
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -35,17 +34,11 @@ public class Main {
         panel.setLayout(null);
         panel.setDoubleBuffered(true);
 
-//        JLabel userLabel = new JLabel("Operations:");
-//        userLabel.setBounds(10, 20, 80, 25);
-//        panel.add(userLabel);
-
-
         JLabel pictureName = new JLabel();
         pictureName.setBounds(20, 50, 200, 25);
 
         JLabel pictureConverted = new JLabel();
         pictureConverted.setBounds(210, 80, 200, 25);
-        pictureConverted.setForeground(Color.GREEN);
 
         JLabel pictureDownloaded = new JLabel();
         pictureDownloaded.setBounds(200, 110, 200, 25);
@@ -69,8 +62,12 @@ public class Main {
         convertTheImage.addActionListener(e -> {
             try {
                 userPicture = new Picture(picture);
-                latestPixelArray = callConvert(latestPixelArray, String.valueOf(transformOptionsCombo.getSelectedItem()));
-                pictureConverted.setText("Image converted!");
+                if (latestPixelArray == null) {
+                    latestPixelArray = callConvert(userPicture.allPixels, String.valueOf(transformOptionsCombo.getSelectedItem()));
+                } else {
+                    latestPixelArray = callConvert(latestPixelArray, String.valueOf(transformOptionsCombo.getSelectedItem()));
+                }
+                pictureConverted.setText((transformOptionsCombo.getSelectedItem()) + " applied!");
                 panel.add(pictureConverted);
                 panel.add(downloadTheConvertedImage);
                 panel.revalidate();
@@ -107,13 +104,13 @@ public class Main {
     private static int[][][] callConvert(int[][][] latestPixelArray, String optionChosen) {
         switch (optionChosen) {
             case "Grey":
-                return Converter.greyScale(userPicture.allPixels);
+                return Converter.greyScale(latestPixelArray);
             case "Reflect-Y":
-                return Converter.reflectionY(userPicture.allPixels);
+                return Converter.reflectionY(latestPixelArray);
             case "Reflect-X":
-                return Converter.reflectionX(userPicture.allPixels);
+                return Converter.reflectionX(latestPixelArray);
             case "Negative":
-                return Converter.negative(userPicture.allPixels);
+                return Converter.negative(latestPixelArray);
             default:
                 System.out.println("Something went wrong while converting!");
                 return null;

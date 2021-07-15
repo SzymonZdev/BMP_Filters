@@ -81,7 +81,6 @@ public class Picture {
         }
 
         // Stackoverflow method to little-endian convert the byte array into an integer value
-        //TODO to powinno być w innej klasie, jakimś extensionMethod, bo nie jest to atrybut nagłowka
         private int getIntValue(byte[] bytes) {
             int result = 0;
             // loop through the values
@@ -98,7 +97,6 @@ public class Picture {
     }
 
     // takes the "clean" bytes from the bmp file and creates a three-dimensional array
-    //TODO to tak samo do exstensionMethod
     public int[][][] generatePixelArray(byte[] allBytes) {
         int[][][] pixelArray = new int[this.header.heightValue][this.header.widthValue][3];
         int byteIndex = 0;
@@ -117,7 +115,6 @@ public class Picture {
         return pixelArray;
     }
 
-    //TODO to tak samo
     private byte[] createConvertedFile(byte[] convertedBytes) {
         byte[] allByteArray = new byte[this.fileHeaderBytes.length + convertedBytes.length];
 
@@ -128,7 +125,6 @@ public class Picture {
         return buff.array();
     }
 
-    //TODO ogólnie wszystkie takie metody powinny być w jakimś extensionMethod pogrupowane, możesz z tego zrobić jakąś bibliotekę, która może być zarządzana oddzielnie
     private int getIntValue(byte[] bytes) {
         ByteBuffer bb = ByteBuffer.wrap(bytes);
         bb.order(ByteOrder.BIG_ENDIAN);
