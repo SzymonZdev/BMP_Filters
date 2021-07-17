@@ -73,9 +73,8 @@ public class Converter {
         // Looping through each row of the Picture
         for (int i = 0; i < pixelArray.length; i++) {
             // Looping through each column of the picture
-            rotatedArray[0][i] = pixelArray[i][0];
             for (int j = 0; j < pixelArray[i].length; j++) {
-                rotatedArray[j][0] = pixelArray[0][j];
+                rotatedArray[j][i] = pixelArray[i][j];
             }
         }
         return rotatedArray;

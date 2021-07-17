@@ -22,42 +22,39 @@ public class Picture {
             int[][][] testPixels = testPicture.allPixels;
             testPixels = Converter.rotateClock90(testPixels);
 
-            System.out.println("Header bytes length before: " + testPicture.fileHeaderBytes.length);
-
-            System.out.println(testPicture.getIntValue(testPicture.header.height));
-            System.out.println(testPicture.getIntValue(testPicture.header.width));
-
-
-            byte[] oldHeaderBytes = Arrays.copyOfRange(testPicture.fileHeaderBytes, 18, 26);
-
-//            width = Arrays.copyOfRange(header, 18, 22);
-//            height = Arrays.copyOfRange(header, 22, 26);
-
-            byte[] newWidthBytes = testPicture.header.height;
-            byte[] newHeightBytes = testPicture.header.width;
-
-
-            byte[] destination = new byte[newWidthBytes.length + newHeightBytes.length];
-
-            System.arraycopy(newWidthBytes, 0, destination, 0, newWidthBytes.length);
-            System.arraycopy(newHeightBytes, 0, destination, newWidthBytes.length, newHeightBytes.length);
-
-            System.out.println(destination.length);
-
-            int index = 0;
-            for (int i = 18; i < 26; i++) {
-                testPicture.fileHeaderBytes[i] = destination[index];
-                index++;
-            }
-            System.out.println("The index value after the loop: " + index);
-
-            System.out.println("And the length of the header after: " + testPicture.fileHeaderBytes.length);
-
+//            System.out.println("Header bytes length before: " + testPicture.fileHeaderBytes.length);
+//
+//            byte[] oldHeaderWidthBytes = Arrays.copyOfRange(testPicture.fileHeaderBytes, 18, 22);
+//            byte[] oldHeaderHeightBytes = Arrays.copyOfRange(testPicture.fileHeaderBytes, 22, 26);
+//
+//            System.out.println(testPicture.header.getIntValue(oldHeaderWidthBytes));
+//            System.out.println(testPicture.header.getIntValue(oldHeaderHeightBytes));
+//
+////            width = Arrays.copyOfRange(header, 18, 22);
+////            height = Arrays.copyOfRange(header, 22, 26);
+//
+//            byte[] newWidthBytes = testPicture.header.height;
+//            byte[] newHeightBytes = testPicture.header.width;
+//
+//
+//            byte[] destination = new byte[newWidthBytes.length + newHeightBytes.length];
+//
+//            System.arraycopy(newWidthBytes, 0, destination, 0, newWidthBytes.length);
+//            System.arraycopy(newHeightBytes, 0, destination, newWidthBytes.length, newHeightBytes.length);
+//
+//            int index = 0;
+//            for (int i = 18; i < 26; i++) {
+//                testPicture.fileHeaderBytes[i] = destination[index];
+//                index++;
+//            }
+//
             byte[] combinedConverted = testPicture.createFile(testPixels);
-
-            System.out.println(testPicture.getIntValue(testPicture.header.height));
-            System.out.println(testPicture.getIntValue(testPicture.header.width));
-
+//
+//            byte[] newHeaderWidthBytes = Arrays.copyOfRange(testPicture.fileHeaderBytes, 18, 22);
+//            byte[] newHeaderHeightBytes = Arrays.copyOfRange(testPicture.fileHeaderBytes, 22, 26);
+//
+//            System.out.println(testPicture.header.getIntValue(newHeaderWidthBytes));
+//            System.out.println(testPicture.header.getIntValue(newHeaderHeightBytes));
 
             Path convertedPath = Paths.get(".\\Images\\converted\\rotateTest2.bmp");
             Files.write(convertedPath, combinedConverted);
