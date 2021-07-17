@@ -64,19 +64,22 @@ public class Converter {
         return negativeArray;
     }
 
-    // rotate?
-//    public static int[][][] rotateClock90(int[][][] pixelArray) {
-//        // Returns a multi-dimensional array of pixels that have been converted to a greyscale picture
-//        int[][][] rotatedArray = new int[pixelArray[0].length][pixelArray.length][pixelArray[0][0].length];
-//        // Loop through each dimension
-//        // Looping through each row of the Picture
-//        for (int i = 0; i < pixelArray.length; i++) {
-//            // Looping through each column of the picture
-//            for (int j = 0; j < pixelArray[i].length; j++) {
-//            }
-//        }
-//        return rotatedArray;
-//    }
+    // rotate
+    public static int[][][] rotateClock90(int[][][] pixelArray) {
+        // Returns a multi-dimensional array of pixels that have been converted to a greyscale picture
+        int[][][] rotatedArray = new int[pixelArray[0].length][pixelArray.length][pixelArray[0][0].length];
+        // Loop through each dimension
+
+        // Looping through each row of the Picture
+        for (int i = 0; i < pixelArray.length; i++) {
+            // Looping through each column of the picture
+            rotatedArray[0][i] = pixelArray[i][0];
+            for (int j = 0; j < pixelArray[i].length; j++) {
+                rotatedArray[j][0] = pixelArray[0][j];
+            }
+        }
+        return rotatedArray;
+    }
 
     // lose focus?
 

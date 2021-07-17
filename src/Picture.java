@@ -3,6 +3,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -13,6 +14,57 @@ public class Picture {
     public byte[] cleanFileBytes;
     public Header header;
     public int[][][] allPixels;
+
+    public static void main(String[] args) {
+        Path picPath = Paths.get(".\\Images\\courtyard.bmp");
+        try {
+            Picture testPicture = new Picture(picPath);
+            int[][][] testPixels = testPicture.allPixels;
+            testPixels = Converter.rotateClock90(testPixels);
+
+            System.out.println("Header bytes length before: " + testPicture.fileHeaderBytes.length);
+
+            System.out.println(testPicture.getIntValue(testPicture.header.height));
+            System.out.println(testPicture.getIntValue(testPicture.header.width));
+
+
+            byte[] oldHeaderBytes = Arrays.copyOfRange(testPicture.fileHeaderBytes, 18, 26);
+
+//            width = Arrays.copyOfRange(header, 18, 22);
+//            height = Arrays.copyOfRange(header, 22, 26);
+
+            byte[] newWidthBytes = testPicture.header.height;
+            byte[] newHeightBytes = testPicture.header.width;
+
+
+            byte[] destination = new byte[newWidthBytes.length + newHeightBytes.length];
+
+            System.arraycopy(newWidthBytes, 0, destination, 0, newWidthBytes.length);
+            System.arraycopy(newHeightBytes, 0, destination, newWidthBytes.length, newHeightBytes.length);
+
+            System.out.println(destination.length);
+
+            int index = 0;
+            for (int i = 18; i < 26; i++) {
+                testPicture.fileHeaderBytes[i] = destination[index];
+                index++;
+            }
+            System.out.println("The index value after the loop: " + index);
+
+            System.out.println("And the length of the header after: " + testPicture.fileHeaderBytes.length);
+
+            byte[] combinedConverted = testPicture.createFile(testPixels);
+
+            System.out.println(testPicture.getIntValue(testPicture.header.height));
+            System.out.println(testPicture.getIntValue(testPicture.header.width));
+
+
+            Path convertedPath = Paths.get(".\\Images\\converted\\rotateTest2.bmp");
+            Files.write(convertedPath, combinedConverted);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public Picture(Path pathFile) throws IOException {
         // gets the path of the file for the Files class to operate on
@@ -79,6 +131,8 @@ public class Picture {
             bitsPerPixelValue = getIntValue(this.bitsPerPixel);
             offSetForPixelsValue = getIntValue(this.offSetForPixels);
         }
+
+
 
         // Stackoverflow method to little-endian convert the byte array into an integer value
         private int getIntValue(byte[] bytes) {
