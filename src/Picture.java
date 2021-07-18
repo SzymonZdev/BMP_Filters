@@ -17,25 +17,22 @@ public class Picture {
 
     public static void main(String[] args) {
         Path picPath = Paths.get(".\\Images\\courtyard.bmp");
+        Path picPathRotated = Paths.get(".\\Images\\courtyardRotated.bmp");
+
         try {
             Picture testPicture = new Picture(picPath);
+            Picture rotatedPicture = new Picture(picPathRotated);
             int[][][] testPixels = testPicture.allPixels;
+            int[][][] rotatedPixels = rotatedPicture.allPixels;
             testPixels = Converter.rotateClock90(testPixels);
 
-//            System.out.println("Header bytes length before: " + testPicture.fileHeaderBytes.length);
-//
-//            byte[] oldHeaderWidthBytes = Arrays.copyOfRange(testPicture.fileHeaderBytes, 18, 22);
-//            byte[] oldHeaderHeightBytes = Arrays.copyOfRange(testPicture.fileHeaderBytes, 22, 26);
-//
-//            System.out.println(testPicture.header.getIntValue(oldHeaderWidthBytes));
-//            System.out.println(testPicture.header.getIntValue(oldHeaderHeightBytes));
-//
-////            width = Arrays.copyOfRange(header, 18, 22);
-////            height = Arrays.copyOfRange(header, 22, 26);
+            testPicture.fileHeaderBytes = rotatedPicture.fileHeaderBytes;
+
+//            width = Arrays.copyOfRange(header, 18, 22);
+//            height = Arrays.copyOfRange(header, 22, 26);
 //
 //            byte[] newWidthBytes = testPicture.header.height;
 //            byte[] newHeightBytes = testPicture.header.width;
-//
 //
 //            byte[] destination = new byte[newWidthBytes.length + newHeightBytes.length];
 //
@@ -47,14 +44,31 @@ public class Picture {
 //                testPicture.fileHeaderBytes[i] = destination[index];
 //                index++;
 //            }
+////
+////            printResolutionX = Arrays.copyOfRange(header, 38, 42);
+////            printResolutionY = Arrays.copyOfRange(header, 42, 46);
+////
+//            byte[] newXBytes = testPicture.header.printResolutionY;
+//            byte[] newYBytes = testPicture.header.printResolutionX;
 //
+//
+//            byte[] destinationResolution = new byte[newXBytes.length + newYBytes.length];
+//
+//            System.arraycopy(newXBytes, 0, destinationResolution, 0, newXBytes.length);
+//            System.arraycopy(newYBytes, 0, destinationResolution, newXBytes.length, newYBytes.length);
+//
+//            int indexResolution = 0;
+//            for (int i = 38; i < 46; i++) {
+//                testPicture.fileHeaderBytes[i] = destinationResolution[indexResolution];
+//                indexResolution++;
+//            }
+
             byte[] combinedConverted = testPicture.createFile(testPixels);
-//
-//            byte[] newHeaderWidthBytes = Arrays.copyOfRange(testPicture.fileHeaderBytes, 18, 22);
-//            byte[] newHeaderHeightBytes = Arrays.copyOfRange(testPicture.fileHeaderBytes, 22, 26);
-//
-//            System.out.println(testPicture.header.getIntValue(newHeaderWidthBytes));
-//            System.out.println(testPicture.header.getIntValue(newHeaderHeightBytes));
+
+            System.out.println("Do these headers equal?: " + (testPicture.fileHeaderBytes == rotatedPicture.fileHeaderBytes));
+            System.out.println("Do these headers' height equal width?: " + (testPicture.header.height == rotatedPicture.header.width));
+            System.out.println("Test picture height: " + (testPicture.header.heightValue));
+            System.out.println("Rotated picture height: " + (rotatedPicture.header.heightValue));
 
             Path convertedPath = Paths.get(".\\Images\\converted\\rotateTest2.bmp");
             Files.write(convertedPath, combinedConverted);
@@ -98,7 +112,8 @@ public class Picture {
         public byte[] bitsPerPixel;
         public byte[] arrayCompression;
         public byte[] rawSize;
-        public byte[] printResolution;
+        public byte[] printResolutionX;
+        public byte[] printResolutionY;
         public byte[] numberColors;
         public byte[] importantColors;
 
@@ -119,7 +134,8 @@ public class Picture {
             bitsPerPixel = Arrays.copyOfRange(header, 28, 30);
             arrayCompression = Arrays.copyOfRange(header, 30, 34);
             rawSize = Arrays.copyOfRange(header, 34, 38);
-            printResolution = Arrays.copyOfRange(header, 38, 46);
+            printResolutionX = Arrays.copyOfRange(header, 38, 42);
+            printResolutionY = Arrays.copyOfRange(header, 42, 46);
             numberColors = Arrays.copyOfRange(header, 46, 50);
             importantColors = Arrays.copyOfRange(header, 50, 55);
 
